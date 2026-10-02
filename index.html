@@ -400,7 +400,7 @@ if (prediction[i].className === "止まれ") {
     document.getElementById("confidence").textContent =
         (probability * 100).toFixed(1) + "%";
 
-    if (probability > 0.85) {
+    if (probability > 0.8) {
         isStopDetected = true;
     }
 
@@ -633,20 +633,19 @@ function handleMotion(event) {
 
 
         // --------------------------------
-        // 一時停止標識を検知しているが走行中
-        // --------------------------------
-        stopStartTime = null;
+// 走行中 → 通常の走行状態へ切り替え
+// --------------------------------
+stopStartTime = null;
 
-        if (!hasSpokenNoStop) {
+currentStatus = "走行中";
 
-            currentStatus = "走行中";
+document.getElementById("stop-status").textContent =
+    "走行中";
 
-            document.getElementById("stop-status").textContent =
-                "走行中";
+document.getElementById("stop-status").style.color =
+    "red";
 
-            document.getElementById("stop-status").style.color =
-                "red";
-        }
+return;
 
         return;
     }
