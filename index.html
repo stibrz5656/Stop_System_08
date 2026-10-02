@@ -516,90 +516,185 @@ function handleMotion(event) {
 
     const total = Math.sqrt(x*x + y*y + z*z);
 
- // 一時停止完了を3秒間表示
-if (Date.now() < stopCompleteUntil) {
-    return;
-}
+    document.getElementById("val-total").textContent =
+        total.toFixed(2);
 
-document.getElementById("val-total").textContent = total.toFixed(2);
+    const now = Date.now();
+
+    // --------------------------------
+    // 停止しているか判定
+    // --------------------------------
     const isStill =
         speedKmh <= STOP_SPEED &&
         total <= STOP_ACCEL;
 
-    if (isStill) {
 
-    // 停止し始めた時刻を記録
-    if (stopStartTime === null) {
-        stopStartTime = Date.now();
-    }
+    // ========================================
+    // ① 一時停止標識を検知中
+    // ========================================
+    if (stopSignDetected) {
 
-    // 0.8秒以上停止していた
-    if (Date.now() - stopStartTime >= STOP_TIME) {
+        // 「止まれ」を検知してから一定時間
+        // まだ停止していない場合
+        if (
+            stopDetectedTime !== null &&
+            now - stopDetectedTime >= NO_STOP_TIME &&
+            !isStill &&
+            !hasSpokenNoStop
+        ) {
 
-        if (stopSignDetected && !hasSpokenStop) {
+            // ----------------------------
+            // 一時不停止
+            // ----------------------------
+            currentStatus = "一時不停止";
 
-            // 一時停止完了
-            document.getElementById("stop-status").textContent = "一時停止完了";
-            document.getElementById("stop-status").style.color = "green";
+            document.getElementById("stop-status").textContent =
+                "一時不停止";
 
-            speakAlert("一時停止しました");
+            document.getElementById("stop-status").style.color =
+                "red";
 
-            hasSpokenStop = true;
+            speakAlert("一時停止していません");
 
-            // 次の一時停止検知に備えてリセット
+            hasSpokenNoStop = true;
+
+            // この標識の判定終了
             stopSignDetected = false;
             stopDetectedTime = null;
-            hasSpokenNoStop = false;
 
+            // 次の標識では再び判定できるようにする
+            hasPlayed = false;
+            hasSpokenStop = false;
+
+            // 停止タイマーもリセット
+            stopStartTime = null;
+
+            return;
+        }
+
+
+        // --------------------------------
+        // 停止している
+        // --------------------------------
+        if (isStill) {
+
+            if (stopStartTime === null) {
+                stopStartTime = now;
+            }
+
+            // 0.8秒以上停止した
+            if (
+                now - stopStartTime >= STOP_TIME &&
+                !hasSpokenStop
+            ) {
+
+                // ----------------------------
+                // 一時停止完了
+                // ----------------------------
+                currentStatus = "一時停止完了";
+
+                document.getElementById("stop-status").textContent =
+                    "一時停止完了";
+
+                document.getElementById("stop-status").style.color =
+                    "green";
+
+                speakAlert("一時停止しました");
+
+                hasSpokenStop = true;
+
+                // この標識の判定終了
+                stopSignDetected = false;
+                stopDetectedTime = null;
+
+                // 次の標識に備える
+                hasPlayed = false;
+                hasSpokenNoStop = false;
+
+                stopStartTime = null;
+
+                return;
+            }
+
+            // まだ停止時間が足りない
+            if (!hasSpokenStop) {
+
+                currentStatus = "停止";
+
+                document.getElementById("stop-status").textContent =
+                    "停止";
+
+                document.getElementById("stop-status").style.color =
+                    "blue";
+            }
+
+            return;
+        }
+
+
+        // --------------------------------
+        // 一時停止標識を検知しているが走行中
+        // --------------------------------
+        stopStartTime = null;
+
+        if (!hasSpokenNoStop) {
+
+            currentStatus = "走行中";
+
+            document.getElementById("stop-status").textContent =
+                "走行中";
+
+            document.getElementById("stop-status").style.color =
+                "red";
+        }
+
+        return;
+    }
+
+
+    // ========================================
+    // ② 一時停止標識を検知していない
+    // ========================================
+
+    // 車両が停止している
+    if (isStill) {
+
+        if (stopStartTime === null) {
+            stopStartTime = now;
+        }
+
+        // 一定時間停止していたら「停止」
+        if (now - stopStartTime >= STOP_TIME) {
+
+            currentStatus = "停止";
+
+            document.getElementById("stop-status").textContent =
+                "停止";
+
+            document.getElementById("stop-status").style.color =
+                "blue";
         }
 
     } else {
 
-        document.getElementById("stop-status").textContent = "停止";
-        document.getElementById("stop-status").style.color = "blue";
-    }
-
-} else {
-
-    // 「止まれ」を検知したのに止まらなかった
-    if (
-        stopSignDetected &&
-        stopDetectedTime !== null &&
-        Date.now() - stopDetectedTime >= NO_STOP_TIME &&
-        !hasSpokenNoStop
-    ) {
-
-        // 一時不停止
-        document.getElementById("stop-status").textContent = "一時不停止";
-        document.getElementById("stop-status").style.color = "red";
-
-        speakAlert("一時停止していません");
-
-        hasSpokenNoStop = true;
-
-        // この標識についての判定を終了
-        stopSignDetected = false;
-        stopDetectedTime = null;
-
-        // 次の標識で再び判定できるようにする
-        hasPlayed = false;
-        hasSpokenStop = false;
-
-    }
-
-    // 通常の走行
-    if (speedKmh > 2 || total > 0.5) {
+        // ========================================
+        // ③ 走行を再開した
+        // ========================================
 
         stopStartTime = null;
 
-        if (!hasSpokenNoStop) {
-            document.getElementById("stop-status").textContent = "走行中";
-            document.getElementById("stop-status").style.color = "red";
-        }
+        // ★重要
+        // 一時不停止後でも走行したら必ず走行中に戻す
+        hasSpokenNoStop = false;
 
-        hasSpokenStop = false;
+        currentStatus = "走行中";
+
+        document.getElementById("stop-status").textContent =
+            "走行中";
+
+        document.getElementById("stop-status").style.color =
+            "red";
     }
-}
 }
  function showhelp(){
         alert("注意”\n\n1.自転車にスマホをセットしてください。\n2.準備ができたら「センサーを許可」を押し、「開始」を押して安全確認した上、発進してください。\n3.安全運転で走行してください\n");
