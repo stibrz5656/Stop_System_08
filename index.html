@@ -388,23 +388,21 @@ async function loop() {
             // ▼▼▼ 追加：止まれの判定 ▼▼▼
             // ※「止まれ」という文字は、Teachable Machineで学習させた時の名前と完全に同じにしてください！
 const probability = prediction[i].probability;
-
+let stopDetectCount = 0;
 if (prediction[i].className === "止まれ") {
 
     document.getElementById("confidence").textContent =
         (probability * 100).toFixed(1) + "%";
-        let recognitionCount = 0;
+    
     if (probability > 0.8) {
-    recognitionCount++;
-
-    if (recognitionCount >= 3) {
-        // ここに実行したいプログラムを書く
-        isStopDetected = true;
-        recognitionCount = 0;
+        stopConfidenceCount++;
+    } else {
+        stopConfidenceCount = 0;
     }
-} else {
-    recognitionCount = 0;
-}
+
+    if (stopConfidenceCount >= 3) {
+        isStopDetected = true;
+    }
 }  
  }
 if (isStopDetected) {
