@@ -393,11 +393,18 @@ if (prediction[i].className === "止まれ") {
 
     document.getElementById("confidence").textContent =
         (probability * 100).toFixed(1) + "%";
-
+        let recognitionCount = 0;
     if (probability > 0.8) {
-        isStopDetected = true;
-    }
+    recognitionCount++;
 
+    if (recognitionCount >= 3) {
+        // ここに実行したいプログラムを書く
+        isStopDetected = true;
+        recognitionCount = 0;
+    }
+} else {
+    recognitionCount = 0;
+}
 }  
  }
 if (isStopDetected) {
