@@ -36,11 +36,12 @@
         <div class="data-box" id="data-area" style="display:none;">
             <span class="label">揺れ</span>
             <span id="val-total" class="highlight">--</span>
+            <span >G</span>
         </div>
 
         <div class="data-box">
             <span class="label">認識率</span>
-            <span id="confidence">--%</span>
+            <span id="confidence">-- %</span>
         </div>
 
     </div>
@@ -297,13 +298,13 @@ uttr.volume = 1.0;    // 最大音量
     // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
 
     // the link to your model provided by Teachable Machine export panel
-    const URL = "https://teachablemachine.withgoogle.com/models/cz23dJXLFc/";
+    const URL = "https://teachablemachine.withgoogle.com/models/Bi8a1mkDe/";
 
     let model, webcam, labelContainer, maxPredictions;
     let speedKmh = 0;
     let stopStartTime = null;
 　　const STOP_SPEED = 3.0;
-　　const STOP_ACCEL = 2.0;
+　　const STOP_ACCEL = 0.1;
 　　const STOP_TIME = 0.5;
 
 　　// 一時不停止判定用
