@@ -420,30 +420,38 @@ if (isStopDetected) {
     document.getElementById("warning-message").style.display = "none";
 }
     }
-  if (navigator.geolocation) {
-      // 速度・位置情報の更新を監視
-　　navigator.geolocation.watchPosition(success, error, {
-    enableHighAccuracy: true,
-    maximumAge: 0,
-    timeout: 1000
-});
-    } else {
-      alert("このブラウザはGPSに対応していません。");
-    }
+
+if (navigator.geolocation) {
+
+    // GPSの速度・位置情報を監視
+    navigator.geolocation.watchPosition(success, error, {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 10000
+    });
+
+} else {
+    alert("このブラウザはGPSに対応していません。");
+}
 
 function success(position) {
 
+    // GPSから速度を取得（m/s → km/h）
     if (position.coords.speed != null) {
         speedKmh = position.coords.speed * 3.6;
-    } else {
-        speedKmh = 0;
     }
+}
 
+function error(err) {
+    console.log("GPS取得エラー:", err.message);
+}
+
+// 速度表示だけを0.1秒ごとに更新
 setInterval(() => {
     document.getElementById("speed").textContent =
         speedKmh.toFixed(1);
 }, 100);
-}
+
 
     function error(err) {
       console.warn(`ERROR(${err.code}): ${err.message}`);
