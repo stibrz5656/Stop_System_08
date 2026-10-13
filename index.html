@@ -336,9 +336,8 @@ document.getElementById("status-box").style.display = "block";
 
         // Convenience function to setup a webcam
         const flip = false ; // whether to flip the webcam
-        webcam = new tmImage.Webcam(360, 360, false);// width, height, flip
+        webcam = new tmImage.Webcam(600, 600, false);// width, height, flip
         
-
         await webcam.setup({ facingMode: "environment" }); // request access to the webcam
         await webcam.play();
         window.requestAnimationFrame(loop);
@@ -358,20 +357,11 @@ async function loop() {
 
     frameCount++;
 
-    if (frameCount % 5 === 0) {
+    if (frameCount % 15 === 0) {
         await predict();
     }
 
     requestAnimationFrame(loop);
-
-    if (
-    speedKmh >= 5 &&
-    now - lastPredict >= PREDICT_INTERVAL
-) {
-    await predict();
-    lastPredict = now;
-}
-
 }
 
     // run the webcam image through the image model
@@ -387,23 +377,23 @@ async function loop() {
 
             // ▼▼▼ 追加：止まれの判定 ▼▼▼
             // ※「止まれ」という文字は、Teachable Machineで学習させた時の名前と完全に同じにしてください！
-const probability = prediction[i].probability;
-let stopDetectCount = 0;
-if (prediction[i].className === "止まれ") {
+            const probability = prediction[i].probability;
+            let stopDetectCount = 0;
+            if (prediction[i].className === "止まれ") {
 
-    document.getElementById("confidence").textContent =
-        (probability * 100).toFixed(1) + "%";
-    
-    if (probability > 0.8) {
-        stopConfidenceCount++;
-    } else {
-        stopConfidenceCount = 0;
-    }
+            document.getElementById("confidence").textContent =
+            (probability * 100).toFixed(1) + "%";
 
-    if (stopConfidenceCount >= 3) {
-        isStopDetected = true;
-    }
-}  
+            if (probability > 0.8) {
+                stopConfidenceCount++;
+          } else {
+            stopConfidenceCount = 0;
+            }
+
+            if (stopConfidenceCount >= 5) {
+                isStopDetected = true;
+                }
+            }  
  }
 if (isStopDetected) {
 
