@@ -336,7 +336,7 @@ document.getElementById("status-box").style.display = "block";
 
         // Convenience function to setup a webcam
         const flip = false ; // whether to flip the webcam
-        webcam = new tmImage.Webcam(400, 400, false);// width, height, flip
+        webcam = new tmImage.Webcam(390, 390, false);// width, height, flip
         
         await webcam.setup({ facingMode: "environment" }); // request access to the webcam
         await webcam.play();
