@@ -446,11 +446,11 @@ function error(err) {
     console.log("GPS取得エラー:", err.message);
 }
 
-// 速度表示だけを0.1秒ごとに更新
+// 速度表示だけを0.05秒ごとに更新
 setInterval(() => {
     document.getElementById("speed").textContent =
         speedKmh.toFixed(1);
-}, 100);
+}, 50);
 
 
     function error(err) {
@@ -511,7 +511,9 @@ function handleMotion(event) {
     const y = event.acceleration.y || 0;
     const z = event.acceleration.z || 0;
 
-    const total = Math.sqrt(x*x + y*y + z*z);
+    const total = Math.sqrt(
+        x * x + y * y + z * z
+    ) / 9.80665;
 
     document.getElementById("val-total").textContent =
         total.toFixed(2);
