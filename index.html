@@ -21,7 +21,6 @@
  <button id="permission-btn"onclick="requestAccess()">センサーを許可</button>
  <button id="start-button"style="display: none;" onclick="init()">開始</button>
 </center>
-<div id="webcam-container"></div>
 <div id="status-box">
 
     <!-- 左：速度 -->
@@ -50,7 +49,6 @@
     <div id="stop-status" class="highlight">判定中</div>
 
 </div>
-<div id="label-container"></div>
 <div id="warning-message">🚨止まれ🚨</div>
 <div id="last-update">
     最終更新日時：<span id="lastModified"></span>
@@ -464,10 +462,6 @@ function success(position) {
     }
 }
 
-function error(err) {
-    console.log("GPS取得エラー:", err.message);
-}
-
 // 速度表示だけを0.05秒ごとに更新
 setInterval(() => {
     document.getElementById("speed").textContent =
@@ -661,19 +655,17 @@ function handleMotion(event) {
 
 
         // --------------------------------
-// 走行中 → 通常の走行状態へ切り替え
-// --------------------------------
-stopStartTime = null;
+    // 走行中 → 通常の走行状態へ切り替え
+    // --------------------------------
+    stopStartTime = null;
 
-currentStatus = "走行中";
+    currentStatus = "走行中";
 
-document.getElementById("stop-status").textContent =
+    document.getElementById("stop-status").textContent =
     "走行中";
 
-document.getElementById("stop-status").style.color =
+    document.getElementById("stop-status").style.color =
     "red";
-
-return;
 
         return;
     }
