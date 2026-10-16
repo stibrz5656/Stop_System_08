@@ -46,12 +46,12 @@
     </div>
 
     <!-- 下：停止状態 -->
-    <div id="stop-status" class="highlight">判定中</div>
+    <div id="stop-status" class="highlight">準備中</div>
 
 </div>
 <div id="warning-message">🚨止まれ🚨</div>
 <div id="last-update">
-    最終更新日時：<span id="lastModified"></span>
+    Last Updated：<span id="lastModified"></span>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
@@ -240,7 +240,7 @@
 <script type="text/javascript">
 const d = new Date(document.lastModified);
 
-document.getElementById("lastModified").textContent =
+    document.getElementById("lastModified").textContent =
     d.getFullYear() + "/" +
     String(d.getMonth() + 1).padStart(2, "0") + "/" +
     String(d.getDate()).padStart(2, "0") + " " +
@@ -248,14 +248,14 @@ document.getElementById("lastModified").textContent =
     String(d.getMinutes()).padStart(2, "0");
 
     // AudioContext（最初に1回だけ作成）
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-let hasPlayed = false;
-let stopSignDetected = false;
-let stopCompleteUntil = 0;
-let hasSpokenStop = false;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let hasPlayed = false;
+    let stopSignDetected = false;
+    let stopCompleteUntil = 0;
+    let hasSpokenStop = false;
 
-// 電子音（）
-function playBeep() {
+    // 電子音（）
+    function playBeep() {
     const now = audioCtx.currentTime;
 
     const gain = audioCtx.createGain();
@@ -284,14 +284,14 @@ function playBeep() {
 
 }
 
-function speakAlert(text) {
+    function speakAlert(text) {
     if (!window.speechSynthesis) return;
     const uttr = new SpeechSynthesisUtterance(text);
-uttr.lang = "ja-JP";
-uttr.rate = 1.0;      // ゆっくり
-uttr.volume = 1.0;    // 最大音量
+    uttr.lang = "ja-JP";
+    uttr.rate = 1.0;      // ゆっくり
+    uttr.volume = 1.0;    // 最大音量
     window.speechSynthesis.speak(uttr);
-}
+    }
     // More API functions here:
     // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
 
@@ -303,7 +303,7 @@ uttr.volume = 1.0;    // 最大音量
     let stopConfidenceCount = 0;
     let stopStartTime = null;
     let statusHoldUntil = 0; // 判定結果の表示を維持する時刻
-    const STOP_SPEED = 2.0;
+    const STOP_SPEED = 1.0;
     const STOP_ACCEL = 0.1;
     const STOP_TIME = 1000;
 
