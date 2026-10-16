@@ -303,7 +303,7 @@ uttr.volume = 1.0;    // 最大音量
     let stopConfidenceCount = 0;
     let stopStartTime = null;
     let statusHoldUntil = 0; // 判定結果の表示を維持する時刻
-    const STOP_SPEED = 3.0;
+    const STOP_SPEED = 2.0;
     const STOP_ACCEL = 0.1;
     const STOP_TIME = 1000;
 
@@ -362,7 +362,7 @@ async function loop() {
 
     frameCount++;
 
-    if (frameCount % 15 === 0) {
+    if (frameCount % 10 === 0) {
         await predict();
     }
 
