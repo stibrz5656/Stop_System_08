@@ -550,8 +550,8 @@ function handleMotion(event) {
     // 停止しているか判定
     // --------------------------------
     const isStill =
-        speedKmh <= STOP_SPEED &&
-        total <= STOP_ACCEL;
+    (speedKmh <= STOP_SPEED) ||
+    (total <= STOP_ACCEL);
 
 
     // ========================================
