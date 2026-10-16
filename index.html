@@ -314,8 +314,7 @@ const d = new Date(document.lastModified);
     let stopCycleLocked = false;
     // 標識が消えた回数
     let noStopFrameCount = 0;
-    const NO_STOP_TIME = 3000; // 3秒以内に止まらなければ一時不停止
-
+    const NO_STOP_TIME = 5000; // 3秒以内に止まらなければ一時不停止
     // Load the image model and setup the webcam
    async function init() {
    // 高校名を非表示
@@ -389,7 +388,7 @@ async function loop() {
             document.getElementById("confidence").textContent =
             (probability * 100).toFixed(1) + "%";
 
-            if (probability > 0.8) {
+            if (probability > 0.70) {
                 stopConfidenceCount++;
           } else {
             stopConfidenceCount = 0;
